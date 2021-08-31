@@ -21,6 +21,22 @@ if (NODE_ENV === "development") {
 app.use("/api/v1/products", productsRoute);
 app.use("/api/v1/users", usersRoute);
 
+//Unhandle routers
+
+app.use("*", (req, res, next) => {
+  const err = new Error(`Can't find ${req.originalUrl} on this server`);
+  err.status = "fail";
+  err.statusCode = 404;
+
+  next(err);
+});
+
+app.use((error, req, res, next) => {
+  res.status(error.statusCode).json({
+    status: error.status,
+    message: error.message
+  });
+});
 app.listen(PORT, () => {
   console.log(`server is listening on port ${PORT}`);
 });
