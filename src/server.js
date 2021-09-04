@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const { PORT, NODE_ENV } = require("./config");
 const productsRoute = require("./routes/products.routes");
 const usersRoute = require("./routes/users.routes");
+const authRoute = require("./routes/auth.routes");
 //Initializations
 const app = express();
 require("./config/mongoose");
@@ -19,6 +20,7 @@ if (NODE_ENV === "development") {
 
 //Routes
 app.use("/api/v1/products", productsRoute);
+app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", usersRoute);
 
 //Unhandle routers

@@ -12,3 +12,8 @@ exports.MONGODB_URL = process.env.MONGODB_URL || "";
 
 //PORT
 exports.PORT = process.env.PORT || 3000;
+
+//JWT
+
+exports.JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "";
+exports.JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "";
