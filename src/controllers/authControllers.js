@@ -28,14 +28,44 @@ exports.protect = (req, res, next) => {
 };
 
 exports.signIn = async (req, res) => {
-  const user = await User.create(req.body);
+  const { email, password } = req.body;
 
-  const token = jwt.sign({ user: user._id }, JWT_SECRET_KEY, {
+  const user = await User.findOne({ email: email });
+
+  if (!user) {
+    //Send error message
+  }
+
+  const validPassword = await user.comparePassword(password);
+
+  if (!validPassword) {
+    //Send Error message
+  }
+
+  const token = jwt.sign({ user: user.id }, JWT_SECRET_KEY, {
     expiresIn: JWT_EXPIRES_IN
   });
 
   res.json({
+    auth: true,
     user,
+    token
+  });
+};
+
+exports.signUp = async (req, res) => {
+  const newUser = new User(req.body);
+
+  newUser.password = await newUser.encryptPassword(req.body.password);
+  await newUser.save();
+
+  const token = jwt.sign({ user: newUser._id }, JWT_SECRET_KEY, {
+    expiresIn: JWT_EXPIRES_IN
+  });
+
+  res.json({
+    auth: true,
+    newUser,
     token
   });
 };
