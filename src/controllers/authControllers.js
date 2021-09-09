@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { JWT_EXPIRES_IN, JWT_SECRET_KEY } = require("../config");
 const User = require("../models/Users");
 
-exports.protect = (req, res, next) => {
+exports.protect = async (req, res, next) => {
   let token;
 
   if (
@@ -24,9 +24,29 @@ exports.protect = (req, res, next) => {
   }
 
   req.token = token;
+
+  //CREATE GLOBAL USER AND GRANT ACCESS TO PROTECTED ROUTE
+  const decode = await jwt.verify(token, JWT_SECRET_KEY);
+  const currentUser = User.findById(decode.id);
+  req.user = currentUser;
+  req.locals.user = currentUser;
   next();
 };
 
+// eslint-disable-next-line arrow-body-style
+exports.restrictTo = (...roles) => {
+  //
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      //Send Error message
+      res.status(403).json({
+        authorization: false
+      });
+    }
+
+    next();
+  };
+};
 exports.signIn = async (req, res) => {
   const { email, password } = req.body;
 
