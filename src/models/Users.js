@@ -33,6 +33,7 @@ const UserSchema = Schema(
 
 UserSchema.methods.encryptPassword = async (password) => {
   const salt = 10;
+
   const hash = await bcrypt.hash(password, salt);
 
   return hash;

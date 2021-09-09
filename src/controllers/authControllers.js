@@ -26,10 +26,12 @@ exports.protect = async (req, res, next) => {
   req.token = token;
 
   //CREATE GLOBAL USER AND GRANT ACCESS TO PROTECTED ROUTE
-  const decode = await jwt.verify(token, JWT_SECRET_KEY);
-  const currentUser = User.findById(decode.id);
+  const decode = jwt.verify(token, JWT_SECRET_KEY);
+
+  const currentUser = await User.findById(decode.user);
+
   req.user = currentUser;
-  req.locals.user = currentUser;
+  // req.locals.user = currentUser;
   next();
 };
 
@@ -82,6 +84,8 @@ exports.signUp = async (req, res) => {
   const token = jwt.sign({ user: newUser._id }, JWT_SECRET_KEY, {
     expiresIn: JWT_EXPIRES_IN
   });
+  // Remove password from output
+  newUser.password = undefined;
 
   res.json({
     auth: true,
