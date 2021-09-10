@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { JWT_EXPIRES_IN, JWT_SECRET_KEY } = require("../config");
 const User = require("../models/Users");
+const UserSchema = require("../libs/userValidator");
 
 exports.protect = async (req, res, next) => {
   let token;
@@ -10,7 +11,6 @@ exports.protect = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
-    console.log(token);
   }
 
   if (!token) {
@@ -76,20 +76,24 @@ exports.signIn = async (req, res) => {
 };
 
 exports.signUp = async (req, res) => {
-  const newUser = new User(req.body);
+  try {
+    const validatorResult = await UserSchema.validateAsync(req.body);
 
-  newUser.password = await newUser.encryptPassword(req.body.password);
-  await newUser.save();
+    const newUser = new User(req.body);
 
-  const token = jwt.sign({ user: newUser._id }, JWT_SECRET_KEY, {
-    expiresIn: JWT_EXPIRES_IN
-  });
-  // Remove password from output
-  newUser.password = undefined;
+    newUser.password = await newUser.encryptPassword(req.body.password);
+    await newUser.save();
 
-  res.json({
-    auth: true,
-    newUser,
-    token
-  });
+    const token = jwt.sign({ user: newUser._id }, JWT_SECRET_KEY, {
+      expiresIn: JWT_EXPIRES_IN
+    });
+    // Remove password from output
+    newUser.password = undefined;
+
+    res.json({
+      auth: true,
+      newUser,
+      token
+    });
+  } catch (error) {}
 };

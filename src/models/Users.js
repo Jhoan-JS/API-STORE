@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const UserSchema = Schema(
   {
-    name: {
+    userName: {
       type: String,
       required: [true, "A user must have a name"],
       trim: true
@@ -19,8 +19,7 @@ const UserSchema = Schema(
     password: {
       type: String,
       required: [true, "A user must have a password"],
-      trim: true,
-      select: false
+      trim: true
     },
     role: {
       type: String,

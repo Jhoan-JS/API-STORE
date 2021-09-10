@@ -12,12 +12,13 @@ const ProductSchema = Schema(
     price: {
       type: Number,
       required: [true, "A product must have a price"],
-      default: 0
+      default: 1
     },
 
     quantity: {
       type: Number,
-      require: [true, "A product must have a quantity"]
+      require: [true, "A product must have a quantity"],
+      default: 1
     },
 
     description: {

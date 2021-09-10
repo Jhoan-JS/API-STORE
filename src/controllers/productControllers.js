@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const ProductSchema = require("../libs/productValidator");
 
 exports.getProducts = async (req, res) => {
   try {
@@ -33,6 +34,8 @@ exports.getProduct = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
+    const validateResult = await ProductSchema.validateAsync(req.body);
+    console.log(validateResult);
     const newProduct = await Product.create(req.body);
     res.status(201).json({
       status: "success",

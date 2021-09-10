@@ -9,7 +9,7 @@ const {
 } = require("../controllers/productControllers");
 
 Router.route("/")
-  .get(protect, getProducts)
+  .get(getProducts)
   .post(protect, restrictTo("admin"), createProduct);
 
 Router.route("/:id")
