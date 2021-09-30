@@ -23,14 +23,14 @@ Install the dependencies and devDependencies and start the server.
 ```sh
 cd API-STORE
 npm i
-node app
+node run start
 ```
 
 For production environments...
 
 ```sh
 npm install --production
-NODE_ENV=production node app
+NODE_ENV=production node run start
 ```
 
 
